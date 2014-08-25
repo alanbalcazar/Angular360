@@ -1,0 +1,18 @@
+.vr.fullscreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.vr-viewport {
+  position: relative;
+  overflow: hidden;
+}
+.vr-cube {
+  transform-style: preserve-3d;
+}
+.vr-cube-face {
+  position: absolute;
+  background-size: contain;
+}
