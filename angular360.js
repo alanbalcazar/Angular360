@@ -1,6 +1,7 @@
 angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', function($swipe) {
   return {
     restrict: 'E',
+    transclude: true,
     template: '<div class="vr" ng-mousedown="$event.preventDefault()" ng-class="{\'fullscreen\': fullscreen}">'
              +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
              +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg)">'
@@ -12,7 +13,8 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
              +      '<div class="vr-cube-face vr-cube-face-bottom" style="width: {{size}}px; height:{{size}}px; transform: rotateX(90deg)  translateZ(-{{size*0.5-1}}px); background-image: url(\'{{bottom}}\');"></div>'
              +    '</div>'
              +  '</div>'
-             +'</div>',
+             +'</div>'
+             +'<div style="display: none;" ng-transclude></div>',
     scope: {
       x:      '=?',
       y:      '=?',
@@ -78,6 +80,14 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
           scope.$apply();
         }
       });
+
+      // put transclude contents (need jQuery)
+      element.find('.vr-cube-face-front').append(element.find('vr-front'));
+      element.find('.vr-cube-face-left').append(element.find('vr-left'));
+      element.find('.vr-cube-face-right').append(element.find('vr-right'));
+      element.find('.vr-cube-face-back').append(element.find('vr-back'));
+      element.find('.vr-cube-face-top').append(element.find('vr-top'));
+      element.find('.vr-cube-face-bottom').append(element.find('vr-bottom'));
     }
   }
 }]);
