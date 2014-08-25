@@ -39,7 +39,7 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
         setFullscreen();
 
         // handle window size change
-        $window.addEventListener('resize', function() {
+        angular.element($window).on('resize', function() {
           setFullscreen();
           $scope.$apply();
         });
@@ -54,7 +54,6 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
         // centering
         $scope.marginLeft = ($window.innerWidth  - $scope.size) * 0.5;
         $scope.marginTop  = ($window.innerHeight - $scope.size) * 0.5;
-        
       }
     }],
     link: function(scope, element) {
