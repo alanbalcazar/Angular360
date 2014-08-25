@@ -1,4 +1,4 @@
-angular.module('Angular360', ['ngTouch']).directive('vrCube', function() {
+angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', function($swipe) {
   return {
     restrict: 'E',
     template: '<div class="vr" ng-mousedown="$event.preventDefault()" ng-class="{\'fullscreen\': fullscreen}">'
@@ -25,52 +25,60 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', function() {
       top:    '=',
       bottom: '='
     },
-    controller: function($scope, $interval, $swipe, $window) {
-      // デフォルトでフルスクリーンモード
+    controller: ['$scope', '$interval', '$window', function($scope, $interval, $window) {
+      // default rotation values
+      $scope.x = $scope.x || 0;
+      $scope.y = $scope.y || 0;
+
+      // set fullscreen enable if not set
       if (!angular.isDefined($scope.fullscreen)) {
         $scope.fullscreen = true;
       }
 
       if ($scope.fullscreen) {
-        // VRサイズをウィンドウサイズの長辺に合わせる
         setFullscreen();
-        $window.addEventListener('resize', setFullscreen);
+
+        // handle window size change
+        $window.addEventListener('resize', function() {
+          setFullscreen();
+          $scope.$apply();
+        });
       } else {
         $scope.size = $scope.size || Math.min($window.innerWidth, $window.innerHeight);
       }
 
-      // 初期回転座標
-      $scope.x = $scope.x || 0;
-      $scope.y = $scope.y || 0;
-
-      // スワイプイベント設定
-      $swipe.bind(angular.element(document.querySelector('.vr')), {
-        start: function(e) {
-          $scope.preTouchPosition = e;
-        },
-        move: function(e) {
-          $scope.y -= e.x - $scope.preTouchPosition.x;
-          $scope.x += e.y - $scope.preTouchPosition.y;
-
-          if ($scope.x > 90) {
-            $scope.x = 90;
-          } else if ($scope.x < -90) {
-            $scope.x = -90;
-          }
-
-          $scope.preTouchPosition = e;
-          $scope.$apply();
-        }
-      });
-
       function setFullscreen() {
+        // set size to cover whole window
         $scope.size = Math.max($window.innerWidth, $window.innerHeight);
 
-        // 中央配置
+        // centering
         $scope.marginLeft = ($window.innerWidth  - $scope.size) * 0.5;
         $scope.marginTop  = ($window.innerHeight - $scope.size) * 0.5;
-        $scope.$apply();
+        
       }
+    }],
+    link: function(scope, element) {
+      // enable gesture control
+      var preTouchPosition;
+
+      $swipe.bind(element, {
+        start: function(e) {
+          preTouchPosition = e;
+        },
+        move: function(e) {
+          scope.y -= e.x - preTouchPosition.x;
+          scope.x += e.y - preTouchPosition.y;
+
+          if (scope.x > 90) {
+            scope.x = 90;
+          } else if (scope.x < -90) {
+            scope.x = -90;
+          }
+
+          preTouchPosition = e;
+          scope.$apply();
+        }
+      });
     }
   }
-});
+}]);
