@@ -16,8 +16,15 @@
   position: absolute;
   background-size: contain;
 }
-
 a.vr-marker {
   display: block;
   position: absolute;
+}
+
+/*
+ * debug style
+ */
+
+.vr.debug a.vr-marker {
+  background: rgba(0, 0, 0, 0.5);
 }
