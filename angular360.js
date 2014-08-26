@@ -1,8 +1,8 @@
-angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', function($swipe) {
+angular.module('Angular360', []).directive('vrCube', [function() {
   return {
     restrict: 'E',
     transclude: true,
-    template: '<div class="vr" ng-mousedown="$event.preventDefault()" ng-class="{\'fullscreen\': fullscreen}">'
+    template: '<div class="vr" ng-class="{\'fullscreen\': fullscreen}">'
              +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
              +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg)">'
              +      '<div class="vr-cube-face vr-cube-face-front"  style="width: {{size}}px; height:{{size}}px; transform:                 translateZ(-{{size*0.5-1}}px); background-image: url(\'{{front}}\');">'
@@ -41,7 +41,7 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
       markers: '='
     },
     controller: ['$scope', '$interval', '$window', function($scope, $interval, $window) {
-      // default rotation values
+      // default values
       $scope.x = $scope.x || 0;
       $scope.y = $scope.y || 0;
 
@@ -72,26 +72,39 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
       }
     }],
     link: function(scope, element) {
-      // enable gesture control
-      var preTouchPosition;
+      // Last event's position.
+      var lastPos;
+      // Whether a swipe is active.
+      var active = false;
 
-      $swipe.bind(element, {
-        start: function(e) {
-          preTouchPosition = e;
-        },
-        move: function(e) {
-          scope.y -= e.x - preTouchPosition.x;
-          scope.x += e.y - preTouchPosition.y;
+      element.on('touchstart mousedown', function(event) {
+        lastPos = getCoordinates(event);
+        active = true;
+      }).on('touchcancel', function(event) {
+        active = false;
+      }).on('touchmove mousemove', function(event) {
+        if (!active) return;
 
-          if (scope.x > 90) {
-            scope.x = 90;
-          } else if (scope.x < -90) {
-            scope.x = -90;
-          }
+        var coords = getCoordinates(event);
+        var dx = coords.x - lastPos.x;
+        var dy = coords.y - lastPos.y;
 
-          preTouchPosition = e;
-          scope.$apply();
-        }
+        // rotate view
+        scope.y -= dx;
+        scope.x += dy;
+
+        // prevent over rotation by X
+        if (scope.x > 90) {
+          scope.x = 90;
+        } else if (scope.x < -90) {
+          scope.x = -90;
+        }  
+
+        lastPos = coords;
+        event.preventDefault();
+        scope.$apply();
+      }).on('touchend mouseup', function(event) {
+        active = false;
       });
 
       // put transclude contents (need jQuery)
@@ -102,5 +115,21 @@ angular.module('Angular360', ['ngTouch']).directive('vrCube', ['$swipe', functio
       element.find('.vr-cube-face-top').append(element.find('vr-top'));
       element.find('.vr-cube-face-bottom').append(element.find('vr-bottom'));
     }
+  }
+
+  /**
+   * from angular-touch.js
+   */
+  function getCoordinates(event) {
+    var touches = event.touches && event.touches.length ? event.touches : [event];
+    var e = (event.changedTouches && event.changedTouches[0]) ||
+        (event.originalEvent && event.originalEvent.changedTouches &&
+            event.originalEvent.changedTouches[0]) ||
+        touches[0].originalEvent || touches[0];
+
+    return {
+      x: e.clientX,
+      y: e.clientY
+    };
   }
 }]);
