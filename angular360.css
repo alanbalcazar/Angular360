@@ -16,3 +16,8 @@
   position: absolute;
   background-size: contain;
 }
+
+a.vr-marker {
+  display: block;
+  position: absolute;
+}
