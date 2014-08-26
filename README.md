@@ -14,7 +14,7 @@
 </head>
 <body>
   <!-- Put <vr-cube> element -->
-  <vr-cube front="'img/front.jpg'" left="'img/left.jpg'" right="'img/right.jpg'" back="'img/back.jpg'" top="'img/top.jpg'" bottom="'img/bottom.jpg'"></vr-cube>
+  <vr-cube front="img/front.jpg" left="img/left.jpg" right="img/right.jpg" back="img/back.jpg" top="img/top.jpg" bottom="img/bottom.jpg"></vr-cube>
 
   <!-- Include dependencies -->
   <script src="bower_components/angular/angular.min.js"></script>
