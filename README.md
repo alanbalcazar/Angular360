@@ -18,7 +18,6 @@
 
   <!-- Include dependencies -->
   <script src="bower_components/angular/angular.min.js"></script>
-  <script src="bower_components/angular-touch/angular-touch.min.js"></script>
 
   <!-- Include JS -->
   <script src="bower_components/angular360/angular360.js"></script>
