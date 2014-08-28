@@ -10,9 +10,24 @@
   overflow: hidden;
 }
 .vr-cube {
-  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+     -moz-transform-style: preserve-3d;
+      -ms-transform-style: preserve-3d;
+          transform-style: preserve-3d;
 }
 .vr-cube-face {
   position: absolute;
   background-size: contain;
+}
+a.vr-marker {
+  display: block;
+  position: absolute;
+}
+
+/*
+ * debug style
+ */
+
+.vr.debug a.vr-marker {
+  background: rgba(0, 0, 0, 0.5);
 }
