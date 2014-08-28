@@ -3,24 +3,24 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
     restrict: 'E',
     transclude: true,
     template: '<div class="vr" ng-class="{fullscreen: fullscreen, debug: debug}">'
-             +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
-             +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg)">'
-             +      '<div class="vr-cube-face vr-cube-face-front"  style="width: {{size}}px; height:{{size}}px; transform:                 translateZ(-{{size*0.5-1}}px); background-image: url(\'{{front}}\');">'
+             +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{size*0.5-1}}px; -webkit-perspective: {{size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
+             +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg); -webkit-transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg);">'
+             +      '<div class="vr-cube-face vr-cube-face-front"  style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{front}}\');  transform:                 translateZ(-{{size*0.5-1}}px); -webkit-transform:                 translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'front\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
-             +      '<div class="vr-cube-face vr-cube-face-left"   style="width: {{size}}px; height:{{size}}px; transform: rotateY(90deg)  translateZ(-{{size*0.5-1}}px); background-image: url(\'{{left}}\');">'
+             +      '<div class="vr-cube-face vr-cube-face-left"   style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{left}}\');   transform: rotateY(90deg)  translateZ(-{{size*0.5-1}}px); -webkit-transform: rotateY(90deg)  translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'left\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
-             +      '<div class="vr-cube-face vr-cube-face-right"  style="width: {{size}}px; height:{{size}}px; transform: rotateY(-90deg) translateZ(-{{size*0.5-1}}px); background-image: url(\'{{right}}\');">'
+             +      '<div class="vr-cube-face vr-cube-face-right"  style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{right}}\');  transform: rotateY(-90deg) translateZ(-{{size*0.5-1}}px); -webkit-transform: rotateY(-90deg) translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'right\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
-             +      '<div class="vr-cube-face vr-cube-face-back"   style="width: {{size}}px; height:{{size}}px; transform: rotateY(180deg) translateZ(-{{size*0.5-1}}px); background-image: url(\'{{back}}\');">'
+             +      '<div class="vr-cube-face vr-cube-face-back"   style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{back}}\');   transform: rotateY(180deg) translateZ(-{{size*0.5-1}}px); -webkit-transform: rotateY(180deg) translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'back\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
-             +      '<div class="vr-cube-face vr-cube-face-top"    style="width: {{size}}px; height:{{size}}px; transform: rotateX(-90deg) translateZ(-{{size*0.5-1}}px); background-image: url(\'{{top}}\');">'
+             +      '<div class="vr-cube-face vr-cube-face-top"    style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{top}}\');    transform: rotateX(-90deg) translateZ(-{{size*0.5-1}}px); -webkit-transform: rotateX(-90deg) translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'top\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
-             +      '<div class="vr-cube-face vr-cube-face-bottom" style="width: {{size}}px; height:{{size}}px; transform: rotateX(90deg)  translateZ(-{{size*0.5-1}}px); background-image: url(\'{{bottom}}\');">'
+             +      '<div class="vr-cube-face vr-cube-face-bottom" style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{bottom}}\'); transform: rotateX(90deg)  translateZ(-{{size*0.5-1}}px); -webkit-transform: rotateX(90deg)  translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'bottom\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
              +    '</div>'
@@ -28,18 +28,18 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
              +'</div>'
              +'<div ng-transclude style="position: absolute;"></div>',
     scope: {
-      x:                 '=?',
-      y:                 '=?',
-      size:              '=?',
-      fullscreen:        '=?',
-      front:             '@',
-      left:              '@',
-      right:             '@',
-      back:              '@',
-      top:               '@',
-      bottom:            '@',
-      markers:           '=',
-      debug:             '=?'
+      x:          '=?',
+      y:          '=?',
+      size:       '=?',
+      fullscreen: '=?',
+      front:      '@',
+      left:       '@',
+      right:      '@',
+      back:       '@',
+      top:        '@',
+      bottom:     '@',
+      markers:    '=',
+      debug:      '=?'
     },
     controller: ['$scope', '$window', function($scope, $window) {
       // default values

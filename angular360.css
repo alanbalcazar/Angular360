@@ -10,7 +10,10 @@
   overflow: hidden;
 }
 .vr-cube {
-  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+     -moz-transform-style: preserve-3d;
+      -ms-transform-style: preserve-3d;
+          transform-style: preserve-3d;
 }
 .vr-cube-face {
   position: absolute;
