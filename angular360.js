@@ -113,6 +113,9 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
         active = false;
       });
 
+      // iOS hack (http://blog.choilabo.com/20120316/18)
+      element.parent().on('touchstart touchmove touchend', angular.noop);
+
       // put transclude contents (need jQuery)
       element.find('.vr-cube-face-front').append(element.find('vr-front'));
       element.find('.vr-cube-face-left').append(element.find('vr-left'));
