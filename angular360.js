@@ -3,8 +3,8 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
     restrict: 'E',
     transclude: true,
     template: '<div class="vr" ng-class="{fullscreen: fullscreen, debug: debug}">'
-             +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{size*0.5-1}}px; -webkit-perspective: {{size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
-             +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg); -webkit-transform: translateZ({{size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg);">'
+             +  '<div class="vr-viewport" style="width: {{size}}px; height:{{size}}px; perspective: {{scale*size*0.5-1}}px; -webkit-perspective: {{scale*size*0.5-1}}px; margin-left: {{marginLeft}}px; margin-top: {{marginTop}}px;">'
+             +    '<div class="vr-cube" style="width: {{size}}px; height:{{size}}px; transform: translateZ({{scale*size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg); -webkit-transform: translateZ({{scale*size*0.5-1}}px) rotateX({{x}}deg) rotateY({{y}}deg);">'
              +      '<div class="vr-cube-face vr-cube-face-front"  style="width: {{size}}px; height:{{size}}px; background-image: url(\'{{front}}\');  transform:                 translateZ(-{{size*0.5-1}}px); -webkit-transform:                 translateZ(-{{size*0.5-1}}px);">'
              +        '<a ng-repeat="marker in markers | filter:{face:\'front\'}" class="vr-marker" href="{{marker.href}}" target="{{marker.target}}" style="left: {{marker.region.left*100}}%; top: {{marker.region.top*100}}%; width: {{marker.region.width*100}}%; height: {{marker.region.height*100}}%;" ng-style="marker.style" ng-click="marker.onclick($event)"></a>'
              +      '</div>'
@@ -30,6 +30,7 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
     scope: {
       x:          '=?',
       y:          '=?',
+      scale:      '=?',
       size:       '=?',
       fullscreen: '=?',
       front:      '@',
@@ -46,6 +47,7 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
       // default values
       $scope.x = $scope.x || 0;
       $scope.y = $scope.y || 0;
+      $scope.scale = $scope.scale || 1;
       $scope.offsetX = 0;
       $scope.offsetY = 0;
 
@@ -96,8 +98,8 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
         if (!active) return;
 
         var coords = getCoordinates(event);
-        var dx = (coords.x - lastPos.x) * scrollSensitivity;
-        var dy = (coords.y - lastPos.y) * scrollSensitivity;
+        var dx = (coords.x - lastPos.x) * scrollSensitivity / scope.scale;
+        var dy = (coords.y - lastPos.y) * scrollSensitivity / scope.scale;
 
         // rotate view
         scope.y -= dx;
@@ -127,6 +129,24 @@ angular.module('Angular360', []).directive('vrCube', ['$window', function($windo
       if ($window.DeviceOrientationEvent) {
         $window.addEventListener('deviceorientation', new DeviceOrientationHandler(scope));
       }
+
+      // mouse wheel
+      window.document.addEventListener('mousewheel', function(e) {
+        if (e.wheelDelta > 0) {
+          scope.scale *=1.1;
+        } else {
+          scope.scale *= 0.9;
+        }
+
+        // prevent over scale
+        if (scope.scale < 0.25) {
+          scope.scale = 0.25;
+        } else if (scope.scale > 4) {
+          scope.scale = 4;
+        }
+
+        scope.$apply();
+      });
 
       function setScrollSensitivity() {
         // scrolling device's left edge to right edge equals 360 rotation
